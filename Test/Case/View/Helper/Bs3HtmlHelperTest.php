@@ -613,4 +613,88 @@ class Bs3HtmlHelperTest extends CakeTestCase {
 		);
 		$this->assertTags($result, $expected);
 	}
+        
+/**
+ * testLink method
+ *
+ * @return void
+ */
+        public function testModal() {
+
+		$result = $this->Html->modalHeading('A modal title');
+		$expected = array('div' => array('class' => 'modal-header'), 'A modal title', '/div');
+		$this->assertTags($result, $expected);
+                
+		$result = $this->Html->modalFooter('A modal footer');
+		$expected = array('div' => array('class' => 'modal-footer'), 'A modal footer', '/div');
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->modalBody('A modal body');
+		$expected = array('div' => array('class' => 'panel-body'), 'A modal body', '/div');
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->modalHeading('A modal title', array(
+			'class' => 'my-modal-heading', 'data-my-value' => '123'
+		));
+		$expected = array(
+			'div' => array(
+				'class' => 'my-modal-heading modal-heading',
+				'data-my-value' => '123'
+			),
+			'A modal title',
+			'/div'
+		);
+		$this->assertTags($result, $expected);
+                
+                $result = $this->Html->modalFooter('A modal footer', array(
+			'class' => 'my-modal-footer', 'data-my-value' => '123'
+		));
+		$expected = array(
+			'div' => array(
+				'class' => 'my-modal-footer modal-footer',
+				'data-my-value' => '123'
+			),
+			'A modal footer',
+			'/div'
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->modalBody('A modal body', array(
+			'class' => 'my-modal-body', 'data-my-value' => '456'
+		));
+		$expected = array(
+			'div' => array(
+				'class' => 'my-modal-body modal-body',
+				'data-my-value' => '456'
+			),
+			'A modal body',
+			'/div'
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->modal('A modal title', 'A modal body');
+		$expected = array(
+                    array('div' => array('class' => 'modal-dialog')),
+			array('div' => array('class' => 'modal-content')),
+                            array('div' => array('class' => 'modal-header')), 'A modal title', '/div',
+			array('div' => array('class' => 'modal-body')), 'A modal body', '/div',
+			'/div',
+                    '/div'
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->panel('A modal title', 'A modal body', null, array(
+			'headingOptions' => array('class' => 'my-modal-heading'),
+			'bodyOptions' => array('class' => 'my-modal-body'),
+		));
+		$expected = array(
+                    array('div' => array('class' => 'modal-dialog')),
+			array('div' => array('class' => 'modal-content')),
+                            array('div' => array('class' => 'my-modal-heading modal-heading')), 'A modal title', '/div',
+			array('div' => array('class' => 'my-modal-body modal-body')), 'A modal body', '/div',
+			'/div',
+                    '/div'
+		);
+		$this->assertTags($result, $expected);
+        }
 }

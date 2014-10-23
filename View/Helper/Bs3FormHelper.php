@@ -1012,8 +1012,9 @@ class Bs3FormHelper extends FormHelper {
         $append = '';
         $options['onclick'] = '';
         if (!empty($confirmMessage['text'])) {
+            // TODO: Precisamos traduzir a sentença abaixo
             if (empty($confirmMessage['title']))
-                $confirmMessage['title'] = __('Confirmation Dialog');
+                $confirmMessage['title'] = __('Diálogo de Confirmação');
             $options['data-toggle'] = 'modal';
             $options['data-target'] = "#$formName-modal";
             $append .= "<div class=\"modal fade text-left\" id=\"$formName-modal\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"#$formName-label\" aria-hidden=\"true\">";
@@ -1028,8 +1029,9 @@ class Bs3FormHelper extends FormHelper {
             $append .= '<div class="modal-body">' . $confirmMessage['text'] . '</div>';
 
             $append .= '<div class="modal-footer">';
-            $append .= '<button type="button" class="btn btn-default" data-dismiss="modal">' . __('No') . '</button>';
-            $append .= $this->Html->link(__('Yes'), '#', array('class' => 'btn btn-primary', 'onclick' => $onClick));
+            // TODO: Precisamos traduzir as sentenças abaixo
+            $append .= '<button type="button" class="btn btn-default" data-dismiss="modal">' . __('Não') . '</button>';
+            $append .= $this->Html->link(__('Sim'), '#', array('class' => 'btn btn-primary', 'onclick' => $onClick));
             $append .= '</div>';
 
             $append .= '</div>';
