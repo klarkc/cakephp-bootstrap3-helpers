@@ -298,8 +298,10 @@ class Bs3HtmlHelper extends HtmlHelper {
                 'class' => 'fade',
                 'tabindex' => '-1',
                 'role' => 'dialog',
-                'aria-labelledby' => "{$id}-label",
                 'aria-hidden' => true,
+                'headingOptions' => array(),
+                'bodyOptions' => array(),
+                'footerOptions' => array()
             );
             
             $options = Hash::merge($defaults, $options);
@@ -307,36 +309,38 @@ class Bs3HtmlHelper extends HtmlHelper {
             
             // Define ID
             if(empty($options['id'])) $options['id'] = str_replace('.', '', uniqid('modal-', true));
+            $options['aria-labelledby'] = $options['id'].'-label';
             
             if (!$this->_blockRendering) {
-                $modalDialog = $this->modalHeading($headingHtml, $options['headingOptions']);
-                $modalDialog .= $this->modalBody($bodyHtml, $options['bodyOptions']);
-                $modalDialog .= $footerHtml?$this->modalFooter($footerHtml, $options['footerOptions']):$footerHtml;
+                $modalContent = $this->modalHeading($headingHtml, $options['headingOptions']);
+                $modalContent .= $this->modalBody($bodyHtml, $options['bodyOptions']);
+                $modalContent .= $footerHtml?$this->modalFooter($footerHtml, $options['footerOptions']):$footerHtml;
             } else {
-                $modalDialog = $this->modalHeading($headingHtml, $options['headingOptions']);
+                $modalContent = $this->modalHeading($headingHtml, $options['headingOptions']);
             }
             
-            $html = $this->tag('div', $modalDialog, array('class' => 'modal-dialog'));
-            
+            $modalContent = $this->tag('div', $modalContent, array('class' => 'modal-content'));
+            $modalDialog = $this->tag('div', $modalContent, array('class' => 'modal-dialog'));
             unset($options['headingOptions'], $options['footerOptions'], $options['bodyOptions']);
-            return $this->tag('div', $html, $options);
+            $modal = $this->tag('div', $modalDialog, $options);            
+            return $modal;
         }
         
-        public function modalHeading($headingHtml, $options = array()) {
+        public function modalHeading($html, $options = array()) {
             $defaults = array('class' => '');
             $options = array_merge($defaults, $options);
             $options = $this->addClass($options, 'modal-header');
             return $this->tag('div', $html, $options);
         }
         
-        public function modalBody($bodyHtml, $options = array()) {
+        public function modalBody($html, $options = array()) {
             $defaults = array('class' => '');
             $options = array_merge($defaults, $options);
             $options = $this->addClass($options, 'modal-body');
             return $this->tag('div', $html, $options);
         }
         
-        public function modalFooter($footerHtml, $options = array()) {
+        public function modalFooter($html, $options = array()) {
             $defaults = array('class' => '');
             $options = array_merge($defaults, $options);
             $options = $this->addClass($options, 'modal-footer');
@@ -349,8 +353,8 @@ class Bs3HtmlHelper extends HtmlHelper {
          * @param string $content Dialog Rendered Content
          * @param array $options Settings
          */
-        public function dialog($title, $content, $options) {
-            $defaults = array('class' => 'dialog');
+        public function dialog($title = null, $content, $options = array()) {
+            $defaults = array('class' => 'fade dialog');
             
             $options = Hash::merge($defaults, $options);
             
@@ -360,36 +364,64 @@ class Bs3HtmlHelper extends HtmlHelper {
             // TODO: Traduzir sentença abaixo
             if(empty($title)) $title = __('Diálogo');
             
-            $headingHtml = $this->Html->tag('h4', $title, array(
-                'class' => 'modal-title',
-                'id' => "{$options['id']}-label"
-            ));
-            $headingHtml .= $this->Html->useTag('button', array(
+            $headingHtml = $this->useTag('button', array(
                 'class' => 'close',
                 'data-dismiss' => 'modal',
                 'aria-hidden' => 'true'
             ), 'x');
+            $headingHtml .= $this->tag('h4', $title, array(
+                'class' => 'modal-title',
+                'id' => "{$options['id']}-label"
+            ));
             
             // Renderizar botões
+            $footerHtml = '';
             if(!empty($options['buttons'])) {
-                foreach($options['buttons'] as $bTitle => $bOptions) {
-                    $footerHtml .= $this->Html->useTag('button', $bOptions, $bTitle);
+                foreach($options['buttons'] as $bOptions) {
+                    $footerHtml .= $this->useTag('button', $bOptions, $bOptions['value']);
                 }
             }
             // TODO: Traduzir sentença abaixo
             if(empty($options['closeButton'])) {
-                $footerHtml .= $this->Html->useTag('button', array(
+                $footerHtml .= $this->useTag('button', array(
                     'class' => 'btn btn-default',
                     'data-dismiss' => 'modal'
                 ), __('Fechar'));
             } else if($options['closeButton'] != FALSE) {
-                $bTitle = $options['closeButton'][0];
-                $bOptions = $options['closeButton'][0][0];
+                $bTitle = array_keys($options['launchButton']['value']);
+                $bOptions = $options['launchButton'];
                 $bOptions['data-dismiss'] = 'modal';
-                $footerHtml .= $this->Html->useTag('button', $bOptions, $bTitle);
+                $footerHtml .= $this->useTag('button', $bOptions, $bTitle);
             }
+                      
+            if(empty($options['launchButton'])) {
+                    // TODO: Traduzir sentença abaixo
+                    $bTitle = __('Abrir Diálogo');
+                    $launchButton = $this->dialogButton($bTitle, $options['id']);
+                    unset($options['launchButton']);
+                    $dialog = $launchButton.$this->modal($headingHtml, $content, $footerHtml, $options);
+            } else {
+                    if($options['launchButton']==FALSE) {
+                        $dialog = $this->modal($headingHtml, $content, $footerHtml, $options);
+                    }
+                    $bTitle = $options['launchButton']['value'];
+                    unset($options['launchButton']['value']);
+                    $bOptions = $options['launchButton'];
+                    $launchButton = $this->dialogButton($bTitle, $options['id'], $bOptions);
+                    unset($options['launchButton']);
+                    $dialog = $launchButton.$this->modal($headingHtml, $content, $footerHtml, $options);
+            }
+            return $dialog;
+        }
+        
+        public function dialogButton($title, $dataTarget, $options = array()) {
+            $defaults = array('class' => 'btn btn-default');
             
-            return $this->modal($headingHtml, $content, $footerHtml, $options);
+            $options = Hash::merge($defaults, $options);
+            $options['data-toggle'] = 'modal';
+            $options['data-target'] = "#{$dataTarget}";
+            
+            return $this->useTag('button', $options, $title);
         }
         
 
