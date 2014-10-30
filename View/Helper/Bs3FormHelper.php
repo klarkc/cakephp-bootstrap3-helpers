@@ -297,7 +297,7 @@ class Bs3FormHelper extends FormHelper {
 			($args['type'] == 'select' &&
 				isset($args['options']['multiple']) &&
 				$args['options']['multiple'] == 'checkbox')) {
-                        if(isset($args['options']['multiple'])){
+                        if(isset($args['options']['class'])){
         			if ($args['options']['class'] == 'form-control'){
                                         unset($args['options']['class']);
                                 }
