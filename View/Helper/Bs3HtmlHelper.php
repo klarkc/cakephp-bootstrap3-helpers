@@ -394,22 +394,24 @@ class Bs3HtmlHelper extends HtmlHelper {
                 $footerHtml .= $this->useTag('button', $bOptions, $bTitle);
             }
                       
-            if(empty($options['launchButton'])) {
+            if(empty($options['launchButton']) && $options['launchButton']!==FALSE) {
                     // TODO: Traduzir sentença abaixo
                     $bTitle = __('Abrir Diálogo');
                     $launchButton = $this->dialogButton($bTitle, $options['id']);
                     unset($options['launchButton']);
                     $dialog = $launchButton.$this->modal($headingHtml, $content, $footerHtml, $options);
             } else {
-                    if($options['launchButton']==FALSE) {
+                    if($options['launchButton']===FALSE) {
                         $dialog = $this->modal($headingHtml, $content, $footerHtml, $options);
+                        unset($options['launchButton']);
+                    } else {
+                        $bTitle = $options['launchButton']['value'];
+                        unset($options['launchButton']['value']);
+                        $bOptions = $options['launchButton'];
+                        $launchButton = $this->dialogButton($bTitle, $options['id'], $bOptions);
+                        unset($options['launchButton']);
+                        $dialog = $launchButton.$this->modal($headingHtml, $content, $footerHtml, $options);
                     }
-                    $bTitle = $options['launchButton']['value'];
-                    unset($options['launchButton']['value']);
-                    $bOptions = $options['launchButton'];
-                    $launchButton = $this->dialogButton($bTitle, $options['id'], $bOptions);
-                    unset($options['launchButton']);
-                    $dialog = $launchButton.$this->modal($headingHtml, $content, $footerHtml, $options);
             }
             return $dialog;
         }
