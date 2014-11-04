@@ -299,6 +299,7 @@ class Bs3HtmlHelper extends HtmlHelper {
                 'tabindex' => '-1',
                 'role' => 'dialog',
                 'aria-hidden' => true,
+                'dialogOptions' => array(),
                 'headingOptions' => array(),
                 'bodyOptions' => array(),
                 'footerOptions' => array()
@@ -320,8 +321,8 @@ class Bs3HtmlHelper extends HtmlHelper {
             }
             
             $modalContent = $this->tag('div', $modalContent, array('class' => 'modal-content'));
-            $modalDialog = $this->tag('div', $modalContent, array('class' => 'modal-dialog'));
-            unset($options['headingOptions'], $options['footerOptions'], $options['bodyOptions']);
+            $modalDialog = $this->modalDialog($modalContent, $options['dialogOptions']);
+            unset($options['headingOptions'], $options['footerOptions'], $options['bodyOptions'], $options['dialogOptions']);
             $modal = $this->tag('div', $modalDialog, $options);            
             return $modal;
         }
@@ -344,6 +345,13 @@ class Bs3HtmlHelper extends HtmlHelper {
             $defaults = array('class' => '');
             $options = array_merge($defaults, $options);
             $options = $this->addClass($options, 'modal-footer');
+            return $this->tag('div', $html, $options);
+        }
+        
+        public function modalDialog ($html, $options = array()) {
+            $defaults = array('class' => '');
+            $options = array_merge($defaults, $options);
+            $options = $this->addClass($options, 'modal-dialog');
             return $this->tag('div', $html, $options);
         }
         
