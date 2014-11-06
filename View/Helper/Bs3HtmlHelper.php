@@ -196,7 +196,12 @@ class Bs3HtmlHelper extends HtmlHelper {
 		if (is_array($items)) {
 			$html = '';
 			foreach ($items as $itemHeading => $itemBody) {
-				$html .= $this->accordionItem($itemHeading, $itemBody, array('accordionId' => $options['id']));
+                                $itemOptions = empty($options[$itemHeading])?array():$options[$itemHeading];
+                                $itemOptions['accordionId'] = $options['id'];
+				$html .= $this->accordionItem($itemHeading, $itemBody, $itemOptions);
+                                if(!empty($options[$itemHeading])){
+                                    unset($options[$itemHeading]);
+                                }
 			}
 		} else {
 			$html= $items;
@@ -214,18 +219,30 @@ class Bs3HtmlHelper extends HtmlHelper {
  * @return string
  */
 	public function accordionItem($titleHtml, $bodyHtml = null, $options = array()) {
-		$itemBodyId = str_replace('.', '', uniqid('accordion_body_', true));
-		$titleLink = $this->link($titleHtml, '#' . $itemBodyId, array(
+                $defaults = array(
+			'headingOptions' => array(), 'bodyOptions' => array(),
+                        'linkOptions' => array(), 'collapseOptions' => array(),
+		);
+                $options = Hash::merge($defaults, $options);
+                
+                $options['linkOptions'] = Hash::merge($options['linkOptions'], array(
 			'data-toggle' => 'collapse', 'data-parent' => '#' . $options['accordionId']
 		));
-		$heading = $this->tag('h4', $titleLink, array('class' => 'panel-title'));
-		$body = $this->tag('div', $this->panelBody($bodyHtml), array(
-			'class' => 'panel-collapse collapse in', 'id' => $itemBodyId
-		));
+		$itemBodyId = str_replace('.', '', uniqid('accordion_body_', true));
+		$titleLink = $this->link($titleHtml, '#' . $itemBodyId, $options['linkOptions']);
+                unset($options['linkOptions']);
 
+		$heading = $this->tag('h4', $titleLink, array('class' => 'panel-title'));
+                
+                $options['collapseOptions']['id'] = $itemBodyId;
+                $options['collapseOptions'] = $this->addClass($options['collapseOptions'], 'panel-collapse collapse');
+		$body = $this->tag('div', $this->panelBody($bodyHtml, $options['bodyOptions']), $options['collapseOptions']);
+                unset($options['bodyOptions'], $options['collapseOptions']);
+                
 		$blockRendering = $this->_blockRendering;
 		$this->_blockRendering = false;
-		$itemHtml = $this->panel($heading, $body, null, array('wrapBody' => false));
+                $options['wrapBody'] = false;
+		$itemHtml = $this->panel($heading, $body, null, $options);
 		$this->_blockRendering = $blockRendering;
 		return $itemHtml;
 	}
