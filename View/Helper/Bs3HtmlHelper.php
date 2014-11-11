@@ -414,10 +414,8 @@ class Bs3HtmlHelper extends HtmlHelper {
                     'data-dismiss' => 'modal'
                 ), __('Fechar'));
             } else if($options['closeButton'] != FALSE) {
-                $bTitle = $options['launchButton']['value'];
-                $bOptions = $options['launchButton'];
-                $bOptions['data-dismiss'] = 'modal';
-                $footerHtml .= $this->useTag('button', $bOptions, $bTitle);
+                $options['closeButton']['data-dismiss'] = 'modal';
+                $footerHtml .= $this->useTag('button', $options['closeButton'], $options['closeButton']['value']);
             }
                       
             if(empty($options['launchButton']) && $options['launchButton']!==FALSE) {
