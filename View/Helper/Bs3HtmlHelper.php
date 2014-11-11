@@ -405,6 +405,7 @@ class Bs3HtmlHelper extends HtmlHelper {
                 foreach($options['buttons'] as $bOptions) {
                     $footerHtml .= $this->useTag('button', $bOptions, $bOptions['value']);
                 }
+                unset($options['buttons']);
             }
             // TODO: Traduzir sentença abaixo
             if(empty($options['closeButton'])) {
