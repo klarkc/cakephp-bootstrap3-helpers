@@ -87,7 +87,7 @@ class Bs3HtmlHelper extends HtmlHelper {
 		}
 
 		$options['class'] = $class;
-		return $this->tag('i', '', $options);
+		return "\n".$this->tag('i', '', $options);
 	}
 
 /**
