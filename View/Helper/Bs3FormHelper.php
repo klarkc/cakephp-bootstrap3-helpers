@@ -254,7 +254,17 @@ class Bs3FormHelper extends FormHelper {
 		$this->_inputType = null;
 		$this->_fieldName = $fieldName;
 		$options = $this->_initInputOptions($options);
+                $optionsParsed = $this->_parseOptions($options);
 
+                // Indentify empty options array in radio and checkbox inputs
+                if((in_array($optionsParsed['type'], array('checkbox')) || in_array($optionsParsed['type'], array('radio')) ) && empty($optionsParsed['options'])) {
+                    if(isset($options['div']['class'])){
+                        $options['div']['class'] .= ' empty';
+                    } else {
+                        $options['div']['class'] = 'empty';
+                    }
+                }
+              
 		return parent::input($fieldName, $options);
 	}
 
@@ -290,6 +300,7 @@ class Bs3FormHelper extends FormHelper {
 	protected function _getInput($args) {
 		$type = $this->_currentInputType = $args['type'];
 		$options = $this->currentInputOptions;
+                
 		$customOptions = $this->currentInputOptions['custom'];
 
 		// TODO: ver esto... Si es de tipo select multiple con checkbox, no setear clase en checkoxes
@@ -310,17 +321,24 @@ class Bs3FormHelper extends FormHelper {
 		if ($type == 'hidden') {
 			return $input;
 		}
-
+                
 		// Prepend beforeInput and append afterInput to generated input field
 		$html['input'] = $this->_getCustom('beforeInput') . $input . $this->_getCustom('afterInput');
-
+                
 		// Checkbox label rendering
 		if ($type == 'checkbox') {
 			if ($this->_getCustom('checkboxLabel')) {
 				$options = $this->domId($args);
 				$html['input'] .= ' ' . $customOptions['checkboxLabel'];
 				$html['input'] = $this->Html->tag('label', $html['input'], array('for' => $options['id']));
-			}
+			} else {
+                                if(empty($options['options'])) {
+                                    $html['input'] = $this->Html->tag('label', $html['input']);
+                                } else {
+                                    // for Bootstrap 3 label must exists
+                                    $html['input'] = $this->Html->tag('label', $html['input']);
+                                }
+                        }
 			$html['input'] = $this->Html->tag('div', $html['input'], array('class' => 'checkbox'));
 		}
 
