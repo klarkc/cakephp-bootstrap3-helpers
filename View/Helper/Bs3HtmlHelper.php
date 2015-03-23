@@ -246,7 +246,141 @@ class Bs3HtmlHelper extends HtmlHelper {
 		$this->_blockRendering = $blockRendering;
 		return $itemHtml;
 	}
+        
+/**
+ * Render a tab panel
+ *
+ * @param array $items Array of itens to be rendered
+ * @param array $nav_items Array of tab names for navigation bar
+ * @param int $active Index of default active tab
+ * @param array $navOptions
+ * @param array $options
+ * @param boolean $pills Alternative pills tab
+ * @param boolean $panel Render in a bootstrap panel or raw html
+ * @return string
+ */
+	public function tab($items = array(), $nav_items = array(), $active = 0, $navOptions = array(), $options = array(), $pills = false, $panel = true ) {
+                // uid
+                $uid = uniqid('tab-');
+                
+                // tab-content
+                $content_html = '';
+                foreach ($items as $itemHeading => $itemBody) {
+                    // Set nav default options if needed
+                    if(empty($nav_items)){
+                        $nav_items[$itemHeading] = $itemHeading;
+                    }
+                    
+                    if(empty($navOptions[$itemHeading]['href'])) {
+                        if (is_string($itemHeading)) {
+                            $navOptions[$itemHeading] = array('href' => "#$itemHeading");
+                        } else {
+                            $navOptions[$itemHeading] = array('href' => "#$uid-$itemHeading");
+                        }
+                    }
+                    
+                    $itemOptions = empty($options[$itemHeading]) ? array() : $options[$itemHeading];
+                    
+                    if($active == $itemHeading) {
+                        $itemOptions = $this->addClass($itemOptions, 'active');
+                    }
+                    
+                    if(empty($itemOptions['id'])) {
+                        if(is_string($itemHeading)) {
+                            $itemOptions['id'] =  $itemHeading;
+                        } else {
+                            $itemOptions['id'] =  "$uid-$itemHeading";
+                        }
+                    }
+                    
+                    $content_html .= $this->tabItem($itemBody, $itemOptions);
+                    if (!empty($options[$itemHeading])) {
+                        unset($options[$itemHeading]);
+                    }
+                }
+                
+                // nav-tabs
+                $nav_html = '';
+                foreach ($nav_items as $navKey => $navBody) {
+                    $nOptions = $navOptions[$navKey];
+                    
+                    if($active == $navKey) {
+                        if(empty($nOptions['wrapperOptions'])) {
+                            $nOptions['wrapperOptions'] = array();
+                        }
+                        $nOptions['wrapperOptions'] = $this->addClass($nOptions['wrapperOptions'], 'active');
+                    }
+                    
+                    $nav_html .= $this->tabNav($navBody, $nOptions);
+                    if (!empty($navOptions[$navKey])) {
+                        unset($navOptions[$navKey]);
+                    }
+                }
+                
+                $nav_class = 'nav';
+                $nav_style = '';
+                if($pills) {
+                    $nav_class .= ' nav-pills';
+                } else {
+                    $nav_class .= ' nav-tabs';
+                }
+                if($panel) $nav_style .= 'margin-bottom: -10px;border-bottom: none;';
+                
+                $nav_html = $this->tag('ul', $nav_html, array('class' => $nav_class, 'style' => $nav_style));
+                
+                if($panel) {
+                    return $this->panel($nav_html, $this->tag('div', $content_html, array('class' => 'tab-content')));
+                } else {
+                    return $nav_html . "\n" . $this->tag('div', $content_html, array('class' => 'tab-content'));
+                }
+	}
+        
 
+/**
+ * Render an tab panel item
+ *
+ * @param mixed $html
+ * @param array $options
+ * @return string
+ */
+	public function tabItem($html = null, $options = array()) {
+                $defaults = array(
+                    'class' => ''
+                );
+                $options = Hash::merge($defaults, $options);               
+                $options = $this->addClass($options, 'tab-pane');
+                
+		$html = $this->tag('div', $html, $options);
+                
+		return $html;
+	}
+        
+/**
+ * Render an tab nav item
+ *
+ * @param mixed $html
+ * @param array $options
+ * @return string
+ */
+	public function tabNav($html = null, $options = array()) {
+                $defaults = array(
+                    'class' => '',
+                    'data-toggle' => 'tab',
+                    'href' => '#',
+                    'wrapperOptions' => array()
+                );
+                $options = Hash::merge($defaults, $options);
+                
+                $wrapper_options = $options['wrapperOptions'];
+                unset($options['wrapperOptions']);
+                
+                $html = $this->tag('a', $html, $options);
+                
+		$html = $this->tag('li', $html, $wrapper_options);
+                
+		return $html;
+	}
+        
 	public function dropdown($toggle, $links = array(), $options = array()) {
 		$defaults = array(
 			'class' => '',
