@@ -267,8 +267,26 @@ class Bs3FormHelper extends FormHelper {
               
 		return parent::input($fieldName, $options);
 	}
-
+        
 /**
+ * Creates a `<button>` tag. The type attribute defaults to `type="submit"`
+ * You can change it to a different value by using `$options['type']`.
+ *
+ * ### Options:
+ *
+ * - `escape` - HTML entity encode the $title of the button. Defaults to false.
+ *
+ * @param string $title The button's caption. Not automatically HTML encoded
+ * @param array $options Array of options and HTML attributes.
+ * @return string A HTML button tag.
+ * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/form.html#FormHelper::button
+ */
+	public function button($title, $options = array()) {
+                if(empty($options['class'])) $options = $this->addClass($options, 'btn btn-default');
+                return parent::button($title, $options);
+	}
+
+        /**
  * Parses current input configuration, extracted from general, form and passed options.
  * Does not make use of _parseOptions() to prevent parent class to avoid overridings.
  *
