@@ -563,9 +563,14 @@ class Bs3HtmlHelper extends HtmlHelper {
                         $dialog = $this->modal($headingHtml, $content, $footerHtml, $options);
                         unset($options['launchButton']);
                     } else {
-                        $bTitle = $options['launchButton']['value'];
-                        unset($options['launchButton']['value']);
-                        $bOptions = $options['launchButton'];
+                        if(is_array($options['launchButton'])) {
+                            $bTitle = $options['launchButton']['value'];
+                            unset($options['launchButton']['value']);
+                            $bOptions = $options['launchButton'];
+                        } else {
+                            $bTitle = $options['launchButton'];
+                            $bOptions = array();
+                        }
                         $launchButton = $this->dialogButton($bTitle, $options['id'], $bOptions);
                         unset($options['launchButton']);
                         $dialog = $launchButton.$this->modal($headingHtml, $content, $footerHtml, $options);
