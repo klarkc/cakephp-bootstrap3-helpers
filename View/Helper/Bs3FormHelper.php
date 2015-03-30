@@ -322,7 +322,7 @@ class Bs3FormHelper extends FormHelper {
 		$customOptions = $this->currentInputOptions['custom'];
 
 		// TODO: ver esto... Si es de tipo select multiple con checkbox, no setear clase en checkoxes
-		if (in_array($type, array('checkbox', 'hidden')) ||
+		if (in_array($type, array('checkbox')) ||
 			($args['type'] == 'select' &&
 				isset($args['options']['multiple']) &&
 				$args['options']['multiple'] == 'checkbox')) {
