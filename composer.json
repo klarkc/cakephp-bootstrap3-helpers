@@ -3,7 +3,7 @@
 	"description": "CakePHP highly configurable helpers for Bootstrap 3 framework.",
 	"type": "cakephp-plugin",
 	"keywords": ["cakephp","bootstrap","helper"],
-	"homepage": "https://github.com/Codaxis/bootstrap3-helpers",
+	"homepage": "https://github.com/klarkc/bootstrap3-helpers",
 	"license": "MIT",
 	"authors": [
 		{
