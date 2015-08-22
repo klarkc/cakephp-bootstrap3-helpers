@@ -1,5 +1,5 @@
 {
-	"name": "codaxis/cakephp-bootstrap3-helpers",
+	"name": "klarkc/cakephp-bootstrap3-helpers",
 	"description": "CakePHP highly configurable helpers for Bootstrap 3 framework.",
 	"type": "cakephp-plugin",
 	"keywords": ["cakephp","bootstrap","helper"],
@@ -7,8 +7,8 @@
 	"license": "MIT",
 	"authors": [
 		{
-			"name": "augusto-cdxs",
-			"email": "augusto@codaxis.com"
+			"name": "klarkc",
+			"email": "walker@praiseweb.com.br"
 		}
 	],
 	"require": {
