@@ -115,7 +115,7 @@ class Bs3HtmlHelper extends HtmlHelper {
                 $defaults = array('class' => '');
 		$options = array_merge($defaults, $options);
 		$options = $this->addClass($options, 'panel-footer');
-		return $this->tag('div', $html, $options);
+		return $this->tag('div', $html?$html:'', $options);
         }
         
 /**
@@ -129,7 +129,7 @@ class Bs3HtmlHelper extends HtmlHelper {
 		$defaults = array('class' => '');
 		$options = array_merge($defaults, $options);
 		$options = $this->addClass($options, 'panel-heading');
-		return $this->tag('div', $html, $options);
+		return $this->tag('div', $html?$html:'', $options);
 	}
 
 /**
@@ -143,7 +143,7 @@ class Bs3HtmlHelper extends HtmlHelper {
 		$defaults = array('class' => '');
 		$options = array_merge($defaults, $options);
 		$options = $this->addClass($options, 'panel-body');
-		return $this->tag('div', $html, $options);
+		return $this->tag('div', $html?$html:'', $options);
 	}
 
 /**
