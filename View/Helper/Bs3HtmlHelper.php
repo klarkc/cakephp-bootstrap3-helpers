@@ -335,7 +335,7 @@ class Bs3HtmlHelper extends HtmlHelper {
                 $nav_html = $this->tag('ul', $nav_html, array('class' => $nav_class, 'style' => $nav_style));
 
                 if($panel) {
-                    return $this->panel($nav_html, $this->tag('div', $content_html, array('class' => 'tab-content')));
+                    return $this->panel($nav_html, $this->tag('div', $content_html, array('class' => 'tab-content')), null, array('class' => 'panel-default panel tab-panel'));
                 } else {
                     return $nav_html . "\n" . $this->tag('div', $content_html, array('class' => 'tab-content'));
                 }
