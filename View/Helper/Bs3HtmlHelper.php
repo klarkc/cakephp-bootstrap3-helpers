@@ -103,7 +103,7 @@ class Bs3HtmlHelper extends HtmlHelper {
 
 		return null;
 	}
-        
+
 /**
  * Render a panel heading
  *
@@ -117,7 +117,7 @@ class Bs3HtmlHelper extends HtmlHelper {
 		$options = $this->addClass($options, 'panel-footer');
 		return $this->tag('div', $html?$html:'', $options);
         }
-        
+
 /**
  * Render a panel heading
  *
@@ -224,7 +224,7 @@ class Bs3HtmlHelper extends HtmlHelper {
                         'linkOptions' => array(), 'collapseOptions' => array(),
 		);
                 $options = Hash::merge($defaults, $options);
-                
+
                 $options['linkOptions'] = Hash::merge($options['linkOptions'], array(
 			'data-toggle' => 'collapse', 'data-parent' => '#' . $options['accordionId']
 		));
@@ -233,12 +233,12 @@ class Bs3HtmlHelper extends HtmlHelper {
                 unset($options['linkOptions']);
 
 		$heading = $this->tag('h4', $titleLink, array('class' => 'panel-title'));
-                
+
                 $options['collapseOptions']['id'] = $itemBodyId;
                 $options['collapseOptions'] = $this->addClass($options['collapseOptions'], 'panel-collapse collapse');
 		$body = $this->tag('div', $this->panelBody($bodyHtml, $options['bodyOptions']), $options['collapseOptions']);
                 unset($options['bodyOptions'], $options['collapseOptions']);
-                
+
 		$blockRendering = $this->_blockRendering;
 		$this->_blockRendering = false;
                 $options['wrapBody'] = false;
@@ -246,7 +246,7 @@ class Bs3HtmlHelper extends HtmlHelper {
 		$this->_blockRendering = $blockRendering;
 		return $itemHtml;
 	}
-        
+
 /**
  * Render a tab panel
  *
@@ -260,10 +260,10 @@ class Bs3HtmlHelper extends HtmlHelper {
  * @param boolean $panel Render in a bootstrap panel or raw html
  * @return string
  */
-	public function tab($items = array(), $nav_items = array(), $active = 0, $navOptions = array(), $options = array(), $mode = 'nav', $jusfied = false, $panel = true ) {
+	public function tab($items = array(), $nav_items = array(), $active = 0, $navOptions = array(), $options = array(), $mode = 'nav', $justified = false, $panel = true ) {
                 // uid
                 $uid = uniqid('tab-');
-                
+
                 // tab-content
                 $content_html = '';
                 foreach ($items as $itemHeading => $itemBody) {
@@ -271,7 +271,7 @@ class Bs3HtmlHelper extends HtmlHelper {
                     if(empty($nav_items)){
                         $nav_items[$itemHeading] = $itemHeading;
                     }
-                    
+
                     if(empty($navOptions[$itemHeading]['href'])) {
                         if (is_string($itemHeading)) {
                             $navOptions[$itemHeading] = array('href' => "#$itemHeading");
@@ -279,13 +279,13 @@ class Bs3HtmlHelper extends HtmlHelper {
                             $navOptions[$itemHeading] = array('href' => "#$uid-$itemHeading");
                         }
                     }
-                    
+
                     $itemOptions = empty($options[$itemHeading]) ? array() : $options[$itemHeading];
-                    
+
                     if($active == $itemHeading) {
                         $itemOptions = $this->addClass($itemOptions, 'active');
                     }
-                    
+
                     if(empty($itemOptions['id'])) {
                         if(is_string($itemHeading)) {
                             $itemOptions['id'] =  $itemHeading;
@@ -293,36 +293,36 @@ class Bs3HtmlHelper extends HtmlHelper {
                             $itemOptions['id'] =  "$uid-$itemHeading";
                         }
                     }
-                    
+
                     $content_html .= $this->tabItem($itemBody, $itemOptions);
                     if (!empty($options[$itemHeading])) {
                         unset($options[$itemHeading]);
                     }
                 }
-                
+
                 // nav-tabs
                 $nav_html = '';
                 foreach ($nav_items as $navKey => $navBody) {
                     $nOptions = $navOptions[$navKey];
-                    
+
                     if($active == $navKey) {
                         if(empty($nOptions['wrapperOptions'])) {
                             $nOptions['wrapperOptions'] = array();
                         }
                         $nOptions['wrapperOptions'] = $this->addClass($nOptions['wrapperOptions'], 'active');
                     }
-                    
+
                     $nav_html .= $this->tabNav($navBody, $nOptions);
                     if (!empty($navOptions[$navKey])) {
                         unset($navOptions[$navKey]);
                     }
                 }
-                
+
                 $nav_class = 'nav';
                 $nav_style = '';
                 if($mode == 'pills') {
                     $nav_class .= ' nav-pills';
-                } else if ($mode == 'stacked' {
+                } else if ($mode == 'stacked') {
                     $nav_class .= ' nav-pills nav-stacked';
                 } else {
 					$nav_class .= ' nav-tabs';
@@ -331,16 +331,16 @@ class Bs3HtmlHelper extends HtmlHelper {
 					$nav_class .= ' nav-justified';
 				}
                 if($panel) $nav_style .= 'margin-bottom: -10px;border-bottom: none;';
-                
+
                 $nav_html = $this->tag('ul', $nav_html, array('class' => $nav_class, 'style' => $nav_style));
-                
+
                 if($panel) {
                     return $this->panel($nav_html, $this->tag('div', $content_html, array('class' => 'tab-content')));
                 } else {
                     return $nav_html . "\n" . $this->tag('div', $content_html, array('class' => 'tab-content'));
                 }
 	}
-        
+
 
 /**
  * Render an tab panel item
@@ -353,14 +353,14 @@ class Bs3HtmlHelper extends HtmlHelper {
                 $defaults = array(
                     'class' => ''
                 );
-                $options = Hash::merge($defaults, $options);               
+                $options = Hash::merge($defaults, $options);
                 $options = $this->addClass($options, 'tab-pane');
-                
+
 		$html = $this->tag('div', $html, $options);
-                
+
 		return $html;
 	}
-        
+
 /**
  * Render an tab nav item
  *
@@ -376,17 +376,17 @@ class Bs3HtmlHelper extends HtmlHelper {
                     'wrapperOptions' => array()
                 );
                 $options = Hash::merge($defaults, $options);
-                
+
                 $wrapper_options = $options['wrapperOptions'];
                 unset($options['wrapperOptions']);
-                
+
                 $html = $this->tag('a', $html, $options);
-                
+
 		$html = $this->tag('li', $html, $wrapper_options);
-                
+
 		return $html;
 	}
-        
+
 	public function dropdown($toggle, $links = array(), $options = array()) {
 		$defaults = array(
 			'class' => '',
@@ -442,7 +442,7 @@ class Bs3HtmlHelper extends HtmlHelper {
 
 		return $this->tag('div', $html, $options);
 	}
-        
+
         /**
          * Render a modal block
          * @param string $title
@@ -461,14 +461,14 @@ class Bs3HtmlHelper extends HtmlHelper {
                 'bodyOptions' => array(),
                 'footerOptions' => array()
             );
-            
+
             $options = Hash::merge($defaults, $options);
             $options = $this->addClass($options, 'modal');
-            
+
             // Define ID
             if(empty($options['id'])) $options['id'] = str_replace('.', '', uniqid('modal-', true));
             $options['aria-labelledby'] = $options['id'].'-label';
-            
+
             if (!$this->_blockRendering) {
                 $modalContent = $this->modalHeading($headingHtml, $options['headingOptions']);
                 $modalContent .= $this->modalBody($bodyHtml, $options['bodyOptions']);
@@ -476,42 +476,42 @@ class Bs3HtmlHelper extends HtmlHelper {
             } else {
                 $modalContent = $this->modalHeading($headingHtml, $options['headingOptions']);
             }
-            
+
             $modalContent = $this->tag('div', $modalContent, array('class' => 'modal-content'));
             $modalDialog = $this->modalDialog($modalContent, $options['dialogOptions']);
             unset($options['headingOptions'], $options['footerOptions'], $options['bodyOptions'], $options['dialogOptions']);
-            $modal = $this->tag('div', $modalDialog, $options);            
+            $modal = $this->tag('div', $modalDialog, $options);
             return $modal;
         }
-        
+
         public function modalHeading($html, $options = array()) {
             $defaults = array('class' => '');
             $options = array_merge($defaults, $options);
             $options = $this->addClass($options, 'modal-header');
             return $this->tag('div', $html, $options);
         }
-        
+
         public function modalBody($html, $options = array()) {
             $defaults = array('class' => '');
             $options = array_merge($defaults, $options);
             $options = $this->addClass($options, 'modal-body');
             return $this->tag('div', $html, $options);
         }
-        
+
         public function modalFooter($html, $options = array()) {
             $defaults = array('class' => '');
             $options = array_merge($defaults, $options);
             $options = $this->addClass($options, 'modal-footer');
             return $this->tag('div', $html, $options);
         }
-        
+
         public function modalDialog ($html, $options = array()) {
             $defaults = array('class' => '');
             $options = array_merge($defaults, $options);
             $options = $this->addClass($options, 'modal-dialog');
             return $this->tag('div', $html, $options);
         }
-        
+
         /**
          * Render a complete dialog modal with title and buttons
          * @param string $title Dialog Title
@@ -520,15 +520,15 @@ class Bs3HtmlHelper extends HtmlHelper {
          */
         public function dialog($title = null, $content, $options = array()) {
             $defaults = array('class' => 'fade dialog');
-            
+
             $options = Hash::merge($defaults, $options);
-            
+
             // Define ID
             if(empty($options['id'])) $options['id'] = str_replace('.', '', uniqid('modal-', true));
-            
+
             // TODO: Traduzir sentença abaixo
             if(empty($title)) $title = __('Diálogo');
-            
+
             $headingHtml = $this->useTag('button', array(
                 'class' => 'close',
                 'data-dismiss' => 'modal',
@@ -538,7 +538,7 @@ class Bs3HtmlHelper extends HtmlHelper {
                 'class' => 'modal-title',
                 'id' => "{$options['id']}-label"
             ));
-            
+
             // Renderizar botões
             $footerHtml = '';
             if(!empty($options['buttons'])) {
@@ -557,7 +557,7 @@ class Bs3HtmlHelper extends HtmlHelper {
                 $options['closeButton']['data-dismiss'] = 'modal';
                 $footerHtml .= $this->useTag('button', $options['closeButton'], $options['closeButton']['value']);
             }
-                      
+
             if(empty($options['launchButton']) && $options['launchButton']!==FALSE) {
                     // TODO: Traduzir sentença abaixo
                     $bTitle = __('Abrir Diálogo');
@@ -584,17 +584,17 @@ class Bs3HtmlHelper extends HtmlHelper {
             }
             return $dialog;
         }
-        
+
         public function dialogButton($title, $dataTarget, $options = array()) {
             $defaults = array('class' => 'btn btn-default');
-            
+
             $options = Hash::merge($defaults, $options);
             $options['data-toggle'] = 'modal';
             $options['data-target'] = "#{$dataTarget}";
-            
+
             return $this->useTag('button', $options, $title);
         }
-        
+
 
 /**
  * Handles custom method calls, like findBy<field> for DB models,
