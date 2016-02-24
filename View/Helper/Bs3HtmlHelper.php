@@ -255,11 +255,12 @@ class Bs3HtmlHelper extends HtmlHelper {
  * @param int $active Index of default active tab
  * @param array $navOptions
  * @param array $options
- * @param boolean $pills Alternative pills tab
+ * @param boolean $mode Can be nav (default), pills or stacked
+ * @param boolean $justified Boolean false default
  * @param boolean $panel Render in a bootstrap panel or raw html
  * @return string
  */
-	public function tab($items = array(), $nav_items = array(), $active = 0, $navOptions = array(), $options = array(), $pills = false, $panel = true ) {
+	public function tab($items = array(), $nav_items = array(), $active = 0, $navOptions = array(), $options = array(), $mode = 'nav', $jusfied = false, $panel = true ) {
                 // uid
                 $uid = uniqid('tab-');
                 
@@ -319,11 +320,16 @@ class Bs3HtmlHelper extends HtmlHelper {
                 
                 $nav_class = 'nav';
                 $nav_style = '';
-                if($pills) {
+                if($mode == 'pills') {
                     $nav_class .= ' nav-pills';
+                } else if ($mode == 'stacked' {
+                    $nav_class .= ' nav-pills nav-stacked';
                 } else {
-                    $nav_class .= ' nav-tabs';
-                }
+					$nav_class .= ' nav-tabs';
+				}
+				if($justified) {
+					$nav_class .= ' nav-justified';
+				}
                 if($panel) $nav_style .= 'margin-bottom: -10px;border-bottom: none;';
                 
                 $nav_html = $this->tag('ul', $nav_html, array('class' => $nav_class, 'style' => $nav_style));
